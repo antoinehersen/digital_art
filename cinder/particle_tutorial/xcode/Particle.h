@@ -6,9 +6,24 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#ifndef particle_tutorial_Particle_h
-#define particle_tutorial_Particle_h
 
+#pragma once
+#include "cinder/Channel.h"
+#include "cinder/Vector.h"
 
+#include <vector>
 
-#endif
+class Particle {
+public:
+	Particle();
+	Particle( ci::Vec2f );
+	void update(float time);
+	void draw();
+	
+	ci::Vec2f	mLoc;
+	ci::Vec2f	mDir;
+	float		mVel;
+	
+	float		mRadius;
+    float       mSeed;
+};

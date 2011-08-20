@@ -6,9 +6,21 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#ifndef particle_tutorial_ParticleController_h
-#define particle_tutorial_ParticleController_h
+#pragma once
+#include "Particle.h"
+#include <list>
 
+class ParticleController {
+public:
+    ParticleController();
 
-
-#endif
+	ParticleController(  int res );
+	void update();
+	void draw();
+	void addParticles( int amt );
+    void addParticle( int xi, int yi, float noise = 0.0f );
+	void removeParticles( int amt );
+    
+	
+	std::list<Particle>	mParticles;
+};

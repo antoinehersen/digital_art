@@ -9,7 +9,7 @@
 #include "ParticleController.h"
 
 #define TOTAL_PARTICLES 4800
-#define RESOLUTION 10
+#define RESOLUTION 14
 static const int WIDTH = 640, HEIGHT = 480;
 
 
@@ -21,6 +21,7 @@ class RasterVideoApp : public AppBasic {
   public:
 	void setup();
 	void mouseDown( MouseEvent event );
+    void mouseMove(MouseEvent event );
     void keyDown( KeyEvent event );
 	void update();
 	void draw();
@@ -34,11 +35,15 @@ class RasterVideoApp : public AppBasic {
 	bool mDrawImage;
     
     Capture				mCapture;
+    
+    Vec2i mMouseLoc;
 
 };
 
 void RasterVideoApp::setup()
 {
+    setFullScreen(true);    
+
     Url url( "http://libcinder.org/media/tutorial/paris.jpg" );
 	mChannel = Channel32f( loadImage( loadUrl( url ) ) );
 	mTexture = mChannel;
@@ -49,7 +54,7 @@ void RasterVideoApp::setup()
 	mDrawImage = false;
     
     try {
-		mCapture = Capture( 640, 480 );
+		mCapture = Capture( app::getWindowWidth(), app::getWindowHeight() );
 		mCapture.start();
 	}
 	catch( ... ) {
@@ -59,6 +64,11 @@ void RasterVideoApp::setup()
 
 void RasterVideoApp::mouseDown( MouseEvent event )
 {
+
+}
+
+void RasterVideoApp::mouseMove(MouseEvent event ) {
+    mMouseLoc = event.getPos();
 
 }
 
@@ -78,7 +88,7 @@ void RasterVideoApp::update()
 	}
     
 	
-	mParticleController.update( mChannel );
+	mParticleController.update( mChannel, mMouseLoc );
 }
 
 void RasterVideoApp::draw()
