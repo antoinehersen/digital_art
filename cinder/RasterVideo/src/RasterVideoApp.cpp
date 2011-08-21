@@ -18,8 +18,9 @@ using namespace ci::app;
 using namespace std;
 
 class RasterVideoApp : public AppBasic {
-  public:
+public:
 	void setup();
+    void reset();
 	void mouseDown( MouseEvent event );
     void mouseMove(MouseEvent event );
     void keyDown( KeyEvent event );
@@ -27,31 +28,26 @@ class RasterVideoApp : public AppBasic {
 	void draw();
     
     Channel32f mChannel;
-	gl::Texture	mTexture;
+	//gl::Texture	mTexture;
 	
 	ParticleController mParticleController;
-	
-	bool mDrawParticles;
-	bool mDrawImage;
     
     Capture				mCapture;
     
     Vec2i mMouseLoc;
-
+    
+    bool useFullScreen;
+    
 };
 
 void RasterVideoApp::setup()
 {
-    setFullScreen(true);    
-
-    Url url( "http://libcinder.org/media/tutorial/paris.jpg" );
-	mChannel = Channel32f( loadImage( loadUrl( url ) ) );
-	mTexture = mChannel;
+    setFullScreen(useFullScreen);    
+    
+    mChannel = Channel32f(app::getWindowWidth(), app::getWindowHeight() );
     
 	mParticleController = ParticleController( RESOLUTION );
-	
-	mDrawParticles = true;
-	mDrawImage = false;
+    
     
     try {
 		mCapture = Capture( app::getWindowWidth(), app::getWindowHeight() );
@@ -60,25 +56,34 @@ void RasterVideoApp::setup()
 	catch( ... ) {
 		console() << "Failed to initialize capture" << std::endl;
 	}
+    
 }
 
 void RasterVideoApp::mouseDown( MouseEvent event )
 {
-
+    
 }
 
 void RasterVideoApp::mouseMove(MouseEvent event ) {
     mMouseLoc = event.getPos();
-
+    
 }
 
 void RasterVideoApp::keyDown( KeyEvent event )
 {
-	if( event.getChar() == '1' ){
-		mDrawImage = ! mDrawImage;
-	} else if( event.getChar() == '2' ){
-		mDrawParticles = ! mDrawParticles;
+    
+    if( event.getCode() == KeyEvent::KEY_f ) {
+        useFullScreen = ! useFullScreen;
+        reset();
 	}
+	else if( event.getCode() == KeyEvent::KEY_ESCAPE ) {
+        useFullScreen= false;
+        reset();
+	} else if( event.getCode() == KeyEvent::KEY_q ) {
+        mCapture.stop();
+        exit(0);
+    }
+
 }
 
 void RasterVideoApp::update()
@@ -91,20 +96,19 @@ void RasterVideoApp::update()
 	mParticleController.update( mChannel, mMouseLoc );
 }
 
+void RasterVideoApp::reset() {
+    mCapture.stop();
+    setup();
+}
+
 void RasterVideoApp::draw()
 {
 	// clear out the window with black
 	gl::clear( Color( 0, 0, 0 ), true ); 
     
-    if( mDrawImage ){
-		mTexture.enableAndBind();
-		gl::draw( mTexture, getWindowBounds() );
-	}
 	
-	if( mDrawParticles ){
-		glDisable( GL_TEXTURE_2D );
-		mParticleController.draw();
-	}
+    glDisable( GL_TEXTURE_2D );
+    mParticleController.draw();
 }
 
 
