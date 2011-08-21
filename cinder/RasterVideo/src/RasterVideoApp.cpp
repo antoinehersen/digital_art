@@ -71,17 +71,15 @@ void RasterVideoApp::mouseMove(MouseEvent event ) {
 
 void RasterVideoApp::keyDown( KeyEvent event )
 {
-    
-    if( event.getCode() == KeyEvent::KEY_f ) {
-        useFullScreen = ! useFullScreen;
-        reset();
-	}
-	else if( event.getCode() == KeyEvent::KEY_ESCAPE ) {
+   if( event.getCode() == KeyEvent::KEY_ESCAPE ) {
         useFullScreen= false;
         reset();
 	} else if( event.getCode() == KeyEvent::KEY_q ) {
         mCapture.stop();
         exit(0);
+    } else {
+        useFullScreen = ! useFullScreen;
+        reset();
     }
 
 }
