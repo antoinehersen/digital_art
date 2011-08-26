@@ -1,3 +1,6 @@
+
+// Dancing squidAmoeba by Antoine Hersen is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
 void setup() {
   size(1000, 800, P2D);
   colorMode(HSB, 1.0);
@@ -52,20 +55,24 @@ class Amoeba {
     fill( yellowish);
     noStroke();
     scale( amoeba_size);
+    float head_rot =  3*(noise( 9*noise_seed  + 0.0005* millis()) - 0.5) ;
+    rotate(head_rot);
     ellipse(0, 0, 100, 120);
+        rotate(-head_rot);
+
     translate(-10, 50);
-    rotate(sub_body_rot);
+    rotate(sub_body_rot+ 1.3*(noise( 7*noise_seed  + 0.0005* millis()) - 0.5) );
 
     scale(sub_body_size);
     ellipse(0, 0, 80, 100);
-    rotate(tail_rot + 1.3*(noise( noise_seed + 0.0005* millis()) - 0.5) );
+    rotate(tail_rot + 1.2*(noise( noise_seed + 0.0005* millis()) - 0.5) );
     scale(tail_size);
     beginShape();
     curveVertex(0, 0); // the first control point
     curveVertex(-5, 0); // is also the start point of curve
 
     curveVertex(0, 100);
-    curveVertex(tail_tail, 170);
+    curveVertex(tail_tail+ 400*(noise( 3*noise_seed + 0.001* millis()) - 0.5) , 170);
     curveVertex(15, 100);
 
     curveVertex(20, 0);
@@ -109,5 +116,7 @@ void draw() {
     popMatrix();
   }
   popMatrix();
+  save("squid.png");
+
 }
 
