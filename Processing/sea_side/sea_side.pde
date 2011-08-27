@@ -18,10 +18,10 @@ void setup() {
 }
 
 void mousePressed() {
-//  seed += 999;
+  //  seed += 999;
   perlin_octave ++ ;
   noiseDetail(perlin_octave);
- // add_noise();
+  // add_noise();
   //save("noise_sea.png");
 }
 
@@ -66,7 +66,7 @@ void add_noise() {
 
 void draw_montain_line(float y) {
   fill(  color(228, 0.79, 1.0- 0.8 * y/height));
-
+  stroke(  color(228, 0.79, 1.0- 0.9 * y/height));
   beginShape();
   vertex(0, 200);
   int step = 1;
@@ -87,7 +87,7 @@ void draw_mountain_range() {
     translate(0, y_step);
     draw_montain_line(y);
     y_step *= 1.3;
- //   println(y_step);
+    //   println(y_step);
   }
   popMatrix();
   seed += 0.01;
