@@ -82,6 +82,8 @@ void draw_montain_line(float y) {
 void draw_mountain_range() {
   background( background_color);
   pushMatrix();
+ // translate(0, 100);
+
   float y_step = 2;
   for (int y = 100; y <= height + 2*y_step; y += y_step) {
     translate(0, y_step);

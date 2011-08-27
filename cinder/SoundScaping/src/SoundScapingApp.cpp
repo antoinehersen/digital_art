@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <vector>
+
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
 
@@ -23,14 +26,25 @@ class SoundScapingApp : public AppBasic {
     
     audio::TrackRef mTrack;
 	audio::PcmBuffer32fRef mPcmBuffer;
+    
+    uint16_t bandCount;
+    std::vector<float> cumlFFT;
+
 };
 
 void SoundScapingApp::setup() {
+   setFullScreen(true);
+    
     //add the audio track the default audio output
-	mTrack = audio::Output::addTrack( audio::load( loadResource( "../resources/drums.mp3", 129, "MP3" )));
+	//mTrack = audio::Output::addTrack( audio::load( loadResource( "../resources/drums.mp3", 129, "MP3" )));
+    mTrack = audio::Output::addTrack( audio::load( loadResource( "../resources/MakeLight.m4a", 129, "M4A" )));
 	
 	//you must enable enable PCM buffering on the track to be able to call getPcmBuffer on it later
 	mTrack->enablePcmBuffering( true );
+    
+    bandCount = 200;;
+    cumlFFT = std::vector<float>(bandCount, 0.0f);
+
 }
 
 void SoundScapingApp::mouseDown( MouseEvent event ) {
@@ -51,7 +65,7 @@ void SoundScapingApp::draw()
 	glPushMatrix();
     glTranslatef( 0.0, 0.0, 0.0 );
     drawWaveForm();
-    glTranslatef( 0.0, 200.0, 0.0 );
+    glTranslatef( 0.0, 400.0, 0.0 );
     drawFft();
 	glPopMatrix();
     
@@ -84,37 +98,63 @@ void SoundScapingApp::drawWaveForm() {
 		y = ( ( rightBuffer->mData[i] - 1 ) * - 100 );
 		rightBufferLine.push_back( Vec2f( x , y) );
 	}
-	gl::color( Color( 1.0f, 0.5f, 0.25f ) );
+	gl::color( Color( 0.0f, 0.5f, 1.0f ) );
 	gl::draw( leftBufferLine );
 	gl::draw( rightBufferLine );
 	
 }
 
 void SoundScapingApp::drawFft() {
-	float ht = 100.0f;
-	uint16_t bandCount = 32;
+	float ht = 200.0f;
 	
 	if( ! mPcmBuffer ) return;
 	
 	//use the most recent Pcm data to calculate the Fft
-	std::shared_ptr<float> fftRef = audio::calculateFft( mPcmBuffer->getChannelData( audio::CHANNEL_FRONT_LEFT ), bandCount );
+	std::shared_ptr<float> fftRef = audio::calculateFft( mPcmBuffer->getChannelData( audio::CHANNEL_FRONT_LEFT ), bandCount * 2);
 	if( ! fftRef ) {
+        std::cout << "Pb with fft" << std::endl;
 		return;
 	}
 	
 	float * fftBuffer = fftRef.get();
-	
+    
+    float maxBand = *max_element(cumlFFT.begin() ,cumlFFT.end() );
+
+	float width = 6.0;
 	//draw the bands
 	for( int i = 0; i < ( bandCount ); i++ ) {
-		float barY = fftBuffer[i] / bandCount * ht;
+		float barY = (fftBuffer[i] / bandCount) * ht;
+
 		glBegin( GL_QUADS );
         glColor3f( 255.0f, 255.0f, 0.0f );
-        glVertex2f( i * 3, ht );
-        glVertex2f( i * 3 + 1, ht );
+        glVertex2f( i * width - 1, ht );
+        glVertex2f( i * width , ht );
         glColor3f( 0.0f, 255.0f, 0.0f );
-        glVertex2f( i * 3 + 1, ht - barY );
-        glVertex2f( i * 3, ht - barY );
+        glVertex2f( i * width , ht - barY );
+        glVertex2f( i * width - 1, ht - barY );
 		glEnd();
+        
+        barY = ( cumlFFT[i] += barY ) / maxBand ;
+        barY *= ht;
+        glPushMatrix();
+
+        glTranslatef( 0.0, 10.0, 0.0 );
+
+        
+        glBegin( GL_QUADS );
+        glColor3f( 255.0f, 0.0f, 0.0f );
+
+        glVertex2f( i * width, ht );
+        glVertex2f( i * width + 1, ht );
+        glColor3f( 255.0f, 255.0f, 0.0f );
+
+        glVertex2f( i * width + 1,ht + barY );
+        glVertex2f( i * width, ht + barY );
+		glEnd();
+        glPopMatrix();
+        
+        cumlFFT[i] *= 0.99;
+
 	}
 }
 
