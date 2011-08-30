@@ -17,6 +17,7 @@
 		00CCAF15116A9FEE008396D5 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 00CCAF14116A9FEE008396D5 /* CinderApp.icns */; };
 		124DDBA214088E19005C85D7 /* drums.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 124DDBA114088E19005C85D7 /* drums.mp3 */; };
 		12DCA872140897B0000B87AD /* MakeLight.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 12DCA871140897B0000B87AD /* MakeLight.m4a */; };
+		12DCA882140C6C53000B87AD /* SoundArch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 12DCA881140C6C53000B87AD /* SoundArch.cpp */; };
 		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
 		5323E6B60EAFCA7E003A9687 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B50EAFCA7E003A9687 /* QTKit.framework */; };
 		53E3CDFC0E86099300238D2B /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53E3CDFB0E86099300238D2B /* Carbon.framework */; };
@@ -35,6 +36,8 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		124DDBA114088E19005C85D7 /* drums.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = drums.mp3; path = ../../../../cinder/cinder_master/samples/AudioAnalysisSample/resources/drums.mp3; sourceTree = "<group>"; };
 		12DCA871140897B0000B87AD /* MakeLight.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = MakeLight.m4a; path = "../../../../../Music/iTunes/iTunes Media/Music/Passion Pit/Manners (Bonus Track Version)/MakeLight.m4a"; sourceTree = "<group>"; };
+		12DCA880140C6C3C000B87AD /* SoundArc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundArc.h; sourceTree = "<group>"; };
+		12DCA881140C6C53000B87AD /* SoundArch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundArch.cpp; sourceTree = "<group>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -71,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				00BAE6590E7ED9C10018A608 /* SoundScapingApp.cpp */,
+				12DCA881140C6C53000B87AD /* SoundArch.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -126,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				32CA4F630368D1EE00C91783 /* SoundScaping_Prefix.pch */,
+				12DCA880140C6C3C000B87AD /* SoundArc.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -214,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00BAE65A0E7ED9C10018A608 /* SoundScapingApp.cpp in Sources */,
+				12DCA882140C6C53000B87AD /* SoundArch.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

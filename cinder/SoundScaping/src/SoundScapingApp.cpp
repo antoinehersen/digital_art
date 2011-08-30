@@ -10,6 +10,8 @@
 #include "cinder/audio/FftProcessor.h"
 #include "cinder/audio/PcmBuffer.h"
 
+#include "SoundArc.h"
+
 using namespace ci;
 using namespace ci::app;
 using namespace std;
@@ -33,7 +35,7 @@ class SoundScapingApp : public AppBasic {
 };
 
 void SoundScapingApp::setup() {
-   setFullScreen(true);
+//   setFullScreen(true);
     
     //add the audio track the default audio output
 	//mTrack = audio::Output::addTrack( audio::load( loadResource( "../resources/drums.mp3", 129, "MP3" )));
@@ -140,6 +142,7 @@ void SoundScapingApp::drawFft() {
 
         glTranslatef( 0.0, 10.0, 0.0 );
 
+
         
         glBegin( GL_QUADS );
         glColor3f( 255.0f, 0.0f, 0.0f );
@@ -156,6 +159,16 @@ void SoundScapingApp::drawFft() {
         cumlFFT[i] *= 0.99;
 
 	}
+    glPushMatrix();
+    glTranslatef(200.0f, 0.0f, 0.0f);
+    
+    float scale = 300.0f / maxBand;
+    glScalef(scale, scale, scale);
+    
+    SoundArc::draw_bands( &cumlFFT[0],  bandCount /2 );
+
+    glPopMatrix();
+
 }
 
 
