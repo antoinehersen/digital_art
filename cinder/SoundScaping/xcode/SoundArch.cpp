@@ -40,14 +40,14 @@ void SoundArc::draw_bands(float * fftBuffer, int bandCounts) {
     glPushMatrix();
     for( int i = 0 ; i < bandCounts; i++ ) {
         glPushMatrix();
-        glColor3f( 1.0f - 1.0f * i / bandCounts, 1.0f, 1.0f * i / bandCounts );
+        glColor4f( 1.0f - 1.0f * i / bandCounts, 1.0f, 1.0f * i / bandCounts , 0.6f);
 
-        float scale = fftBuffer[i];
+        float scale = fftBuffer[i] ;
         glScalef(scale, scale, scale);
         draw_arc(angle);    
         glPopMatrix();
         
-        glRotatef( angle_deg, 0.0f, 0.0f, 1.0f);
+        glRotatef( angle_deg+0.5, 0.0f, 0.0f, 1.0f);
     }
     glPopMatrix();
 

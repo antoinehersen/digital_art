@@ -35,7 +35,7 @@ class SoundScapingApp : public AppBasic {
 };
 
 void SoundScapingApp::setup() {
-//   setFullScreen(true);
+   setFullScreen(true);
     
     //add the audio track the default audio output
 	//mTrack = audio::Output::addTrack( audio::load( loadResource( "../resources/drums.mp3", 129, "MP3" )));
@@ -44,7 +44,7 @@ void SoundScapingApp::setup() {
 	//you must enable enable PCM buffering on the track to be able to call getPcmBuffer on it later
 	mTrack->enablePcmBuffering( true );
     
-    bandCount = 200;;
+    bandCount = 50;;
     cumlFFT = std::vector<float>(bandCount, 0.0f);
 
 }
@@ -160,13 +160,23 @@ void SoundScapingApp::drawFft() {
 
 	}
     glPushMatrix();
-    glTranslatef(200.0f, 0.0f, 0.0f);
+    glTranslatef(600.0f, 0.0f, 0.0f);
     
     float scale = 300.0f / maxBand;
     glScalef(scale, scale, scale);
     
     SoundArc::draw_bands( &cumlFFT[0],  bandCount /2 );
 
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(800.0f, 200.0f, 0.0f);
+    
+    float scale2 = 600.0f / bandCount;
+    glScalef(scale2, scale2, scale2);
+    
+    SoundArc::draw_bands( fftBuffer,  bandCount /2 );
+    
     glPopMatrix();
 
 }
