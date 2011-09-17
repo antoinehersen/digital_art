@@ -63,7 +63,7 @@ void bm::prepareSettings( Settings *settings ){
 void borwnian_motionApp::setup(){
     Rand::randomize();
     gl::enableAdditiveBlending();
-    setFullScreen(true);
+ //   setFullScreen(true);
     
 	// SETUP CAMERA
 	mCameraDistance = 5.0f;
@@ -145,6 +145,10 @@ void borwnian_motionApp::update() {
     Vec3f newPoint = path.last();
     mCenter = newPoint;
     mUp = (lastLast - prevPoint).cross( newPoint - prevPoint) ;
+    Vec3f s = mUp + mOldUp;
+    if (fabs(s.x) < 0.01f && fabs(s.y) < 0.01f && fabs(s.z) < 0.01 ) {
+        mUp = - mUp;
+    }
     
     mEye =  mCameraDistance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
     
