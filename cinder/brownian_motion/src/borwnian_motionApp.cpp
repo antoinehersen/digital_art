@@ -47,9 +47,11 @@ public:
     float upFactor;
     
     float               mLineW;
+    float duration;
+
     float lastTime;
     
-    Vec3f lastLast, prevPoint;
+    Vec3f lastLast, prevPoint, newPoint;
     
     Path path;
 };
@@ -66,6 +68,8 @@ void borwnian_motionApp::setup(){
     Rand::randomize();
     gl::enableAdditiveBlending();
     setFullScreen(true);
+    
+    duration = 10.0f;
     
 	// SETUP CAMERA
     cameraFollow = true;
@@ -87,6 +91,8 @@ void borwnian_motionApp::setup(){
     //    mParams.addParam( "Alpha", &path.m_alpha, "min=0.0 max=1.0 step=0.05 keyIncr=q keyDecr=e" );
     mParams.addParam( "Line Width", &mLineW, "min=0.0 max=5.0 step=0.05 " );
     mParams.addParam( "Up Factor", &upFactor, "min=0.5 max=5.0 step=0.05 " );
+    mParams.addParam( "Duration", &duration, "min=0.5 max=50.0 step=0.5 " );
+
     
     
     
@@ -127,16 +133,20 @@ void borwnian_motionApp::keyDown( KeyEvent event )
 	} else if( event.getCode() == KeyEvent::KEY_q ) {
         //     mCapture.stop();
         //    exit(0);
-    }  if( event.getCode() == KeyEvent::KEY_c ) {
+    }  else if( event.getCode() == KeyEvent::KEY_c ) {
         cameraFollow = !cameraFollow;
         mCenter = path.last();
-
+        
+    } else if( event.getCode() == KeyEvent::KEY_SPACE ) {
+        float distance = mCameraDistance* Rand::randInt(20);
+        
+        mEye =  distance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
+        
     }
     
 }
 
 bool borwnian_motionApp::everySecond() {
-    const float duration = 3.0f;
     float time = getElapsedSeconds();
     
     
@@ -174,7 +184,7 @@ void borwnian_motionApp::update() {
             mOldUp = mUp;
             mOldEye = mEye;
             
-            Vec3f newPoint = path.last();
+            newPoint = path.last();
             mCenter = newPoint;
             mUp = (lastLast - prevPoint).cross( newPoint - prevPoint) ;
             Vec3f s = mUp + mOldUp;
@@ -188,7 +198,7 @@ void borwnian_motionApp::update() {
             mEye =  distance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
         }  
         
-
+        
         mCam.lookAt( interVec3f(mOldEye,mEye),
                     interVec3f(mOldCenter,mCenter),
                     interVec3f(mOldUp, mUp ));
@@ -197,8 +207,8 @@ void borwnian_motionApp::update() {
     } else {
         path.add_node();
         
-        mEye			= Vec3f( 0.0f, 0.0f, 100*mCameraDistance );
-//        mCenter			= Vec3f::zero();
+        mEye			= Vec3f( 0.0f, 0.0f, 50*mCameraDistance );
+        //        mCenter			= Vec3f::zero();
         mUp				= Vec3f::yAxis();
         mCam.lookAt( mEye, mCenter, mUp);
         gl::setMatrices( mCam );
