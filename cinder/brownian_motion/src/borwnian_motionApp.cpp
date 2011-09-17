@@ -66,7 +66,7 @@ void borwnian_motionApp::setup(){
     setFullScreen(true);
     
 	// SETUP CAMERA
-	mCameraDistance = -5.0f;
+	mCameraDistance = -10.0f;
 	mEye			= Vec3f( 0.0f, 0.0f, mCameraDistance );
 	mCenter			= Vec3f::zero();
 	mUp				= Vec3f::yAxis();
@@ -116,7 +116,7 @@ void borwnian_motionApp::mouseDown( MouseEvent event )
 }
 
 bool borwnian_motionApp::everySecond() {
-    const float duration = 2.0f;
+    const float duration = 3.0f;
     float time = getElapsedSeconds();
     
 

@@ -99,6 +99,9 @@ void Path::draw(float inter) {
     
     Vec3f interLast = interVec3f( m_path.back() , last, inter);
     m_alpha = 0.4;
+    glEnable( GL_LINE_SMOOTH );
+glEnable( GL_MULTISAMPLE_ARB );
+    glHint(GL_LINE_SMOOTH_HINT,GL_NICEST); 
     
     glBegin(GL_LINE_STRIP);
     
