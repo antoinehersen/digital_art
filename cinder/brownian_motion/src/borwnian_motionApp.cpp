@@ -129,6 +129,8 @@ void borwnian_motionApp::keyDown( KeyEvent event )
         //    exit(0);
     }  if( event.getCode() == KeyEvent::KEY_c ) {
         cameraFollow = !cameraFollow;
+        mCenter = path.last();
+
     }
     
 }
@@ -171,23 +173,22 @@ void borwnian_motionApp::update() {
             mOldCenter = mCenter;
             mOldUp = mUp;
             mOldEye = mEye;
+            
+            Vec3f newPoint = path.last();
+            mCenter = newPoint;
+            mUp = (lastLast - prevPoint).cross( newPoint - prevPoint) ;
+            Vec3f s = mUp + mOldUp;
+            if (fabs(s.x) < 0.01f && fabs(s.y) < 0.01f && fabs(s.z) < 0.01 ) {
+                mUp = - mUp;
+            }
+            float distance = mCameraDistance;
+            if ( Rand::randInt(10) == 0 ) {
+                distance *= Rand::randInt(20);
+            }
+            mEye =  distance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
         }  
         
-        Vec3f newPoint = path.last();
-        mCenter = newPoint;
-        mUp = (lastLast - prevPoint).cross( newPoint - prevPoint) ;
-        Vec3f s = mUp + mOldUp;
-        if (fabs(s.x) < 0.01f && fabs(s.y) < 0.01f && fabs(s.z) < 0.01 ) {
-            mUp = - mUp;
-        }
-        
-        mEye =  mCameraDistance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
-        
-        
-        
-        // UPDATE CAMERA
-        //	mEye = Vec3f( 0.0f, 0.0f, mCameraDistance );
-        
+
         mCam.lookAt( interVec3f(mOldEye,mEye),
                     interVec3f(mOldCenter,mCenter),
                     interVec3f(mOldUp, mUp ));
@@ -197,7 +198,7 @@ void borwnian_motionApp::update() {
         path.add_node();
         
         mEye			= Vec3f( 0.0f, 0.0f, 100*mCameraDistance );
-        mCenter			= Vec3f::zero();
+//        mCenter			= Vec3f::zero();
         mUp				= Vec3f::yAxis();
         mCam.lookAt( mEye, mCenter, mUp);
         gl::setMatrices( mCam );
