@@ -8,6 +8,9 @@
 #include "cinder/Camera.h"
 #include "cinder/Rand.h"
 
+#include "cinder/Easing.h"
+
+
 #include "Path.h"
 
 using namespace ci;
@@ -16,12 +19,18 @@ using namespace std;
 
 
 class borwnian_motionApp : public AppBasic {
-  public:
+public:
     void prepareSettings( Settings *settings );
 	void setup();
 	void mouseDown( MouseEvent event );	
 	void update();
 	void draw();
+    
+    bool everySecond();
+    float interpolate;
+    Vec3f interVec3f(Vec3f from, Vec3f to);
+    float interf(float from, float to);
+
     
     // PARAMS
 	params::InterfaceGl	mParams;
@@ -30,7 +39,15 @@ class borwnian_motionApp : public AppBasic {
 	CameraPersp			mCam;
 	Quatf				mSceneRotation;
 	Vec3f				mEye, mCenter, mUp;
+    Vec3f				mOldEye, mOldCenter, mOldUp;
+
 	float				mCameraDistance;
+    float upFactor;
+    
+    float               mLineW;
+    float lastTime;
+    
+    Vec3f lastLast, prevPoint;
     
     Path path;
 };
@@ -49,37 +66,108 @@ void borwnian_motionApp::setup(){
     setFullScreen(true);
     
 	// SETUP CAMERA
-	mCameraDistance = 1500.0f;
+	mCameraDistance = 5.0f;
 	mEye			= Vec3f( 0.0f, 0.0f, mCameraDistance );
 	mCenter			= Vec3f::zero();
 	mUp				= Vec3f::yAxis();
-	mCam.setPerspective( 75.0f, getWindowAspectRatio(), 5.0f, 200000.0f );
+	mCam.setPerspective( 75.0f, getWindowAspectRatio(), 0.1f, 200000.0f );
+    
+    mLineW = 1.0f;
+    path.m_alpha = 0.2f;
+    upFactor = 2.0f;
     
     // SETUP PARAMS
-	mParams = params::InterfaceGl( "Flocking", Vec2i( 200, 300 ) );
+	mParams = params::InterfaceGl( "Browniw", Vec2i( 200, 300 ) );
 	mParams.addParam( "Scene Rotation", &mSceneRotation, "opened=1" );
 	mParams.addSeparator();
-	mParams.addParam( "Eye Distance", &mCameraDistance, "min=50.0 max=1000.0 step=50.0 keyIncr=s keyDecr=w" );
+	mParams.addParam( "Eye Distance", &mCameraDistance, "min=-5.0 max=20 step=0.5 keyIncr=s keyDecr=w" );
+    mParams.addParam( "Alpha", &path.m_alpha, "min=0.0 max=1.0 step=0.05 keyIncr=q keyDecr=e" );
+    mParams.addParam( "Line Width", &mLineW, "min=0.0 max=5.0 step=0.05 " );
+    mParams.addParam( "Up Factor", &upFactor, "min=0.5 max=5.0 step=0.05 " );
+    
+    
     
     path.setup();
+    
+    path.add_node();
+    
+    for(int i =0 ; i< 300000; i++) {
+        path.add_node();
+    }
+    mCenter = path.last();
+    //   for(int i =0 ; i< 1000000; i++) {
+    //       path.add_node();
+    //       }
+    for(int i =0 ; i< 10; i++) {
+        
+        path.add_node();
+        mCenter = mEye;
+        mEye =  path.last();
+    }
+    
+    lastTime = getElapsedSeconds();
 }
 
 void borwnian_motionApp::mouseDown( MouseEvent event )
 {
 }
 
-void borwnian_motionApp::update() {
-    // UPDATE CAMERA
-	mEye = Vec3f( 0.0f, 0.0f, mCameraDistance );
-	mCam.lookAt( mEye, mCenter, mUp );
-	gl::setMatrices( mCam );
-	gl::rotate( mSceneRotation );
+bool borwnian_motionApp::everySecond() {
+    const float duration = 2.5f;
+    float time = getElapsedSeconds();
     
-    path.add_node();
+
     
-    for(int i =0 ; i< 1000; i++) {
-        path.add_node();
+    if ( time >= lastTime + duration ) {
+        lastTime = time;
+        interpolate = 0;
+        return true;
     }
+    interpolate = (time - lastTime) / duration;
+    
+ //   interpolate = easeInOutQuad( interpolate);
+    return false;
+}
+float borwnian_motionApp::interf(float from, float to) {
+    return (to - from) * interpolate + from;
+    
+}
+
+Vec3f borwnian_motionApp::interVec3f(Vec3f from, Vec3f to) {
+    return Vec3f(interf(from.x, to.x),
+                interf(from.y, to.y),
+                interf(from.z, to.z));
+}
+
+void borwnian_motionApp::update() {
+    
+
+    Vec3f newPoint = path.last();
+    mCenter = newPoint;
+    mUp = (lastLast - prevPoint).cross( newPoint - prevPoint) ;
+    
+    mEye =  mCameraDistance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
+    
+    if (everySecond()) {
+        lastLast = prevPoint;
+        prevPoint = path.last();
+        path.add_node();
+        mOldCenter = mCenter;
+        mOldUp = mUp;
+        mOldEye = mEye;
+    }
+    
+    // UPDATE CAMERA
+    //	mEye = Vec3f( 0.0f, 0.0f, mCameraDistance );
+	mCam.lookAt( interVec3f(mOldEye,mEye),
+                interVec3f(mOldCenter,mCenter),
+                interVec3f(mOldUp, mUp ));
+
+	gl::setMatrices( mCam );
+ //   gl::rotate( mSceneRotation );
+
+    
+    
 }
 
 void borwnian_motionApp::draw()
@@ -90,10 +178,12 @@ void borwnian_motionApp::draw()
     // DRAW PARAMS WINDOW
 	params::InterfaceGl::draw();
     
+    glLineWidth(mLineW);
     gl::color( ColorA( 1.0f, 1.0f, 1.0f, 1.0f ) );
     //	gl::drawSphere( Vec3f(1.0f, 0.0f, 0.0f), 2.0f, 8 );
+
     
-    path.draw();
+    path.draw(interpolate);
 }
 
 

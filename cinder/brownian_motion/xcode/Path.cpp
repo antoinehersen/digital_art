@@ -61,18 +61,59 @@ void Path::add_node() {
     
 }
 
-void Path::draw() {
-    glPushMatrix();
 
-    float scale = 5;
-    glScalef(scale, scale, scale);
+ci::Vec3f Path::last(){
+    return m_path.back();
+}
+
+void Path::draw() {
 
     glBegin(GL_LINE_STRIP);
-    glColor4f( 1.0f, 1.0f, 1.0f, 0.3f);
+    glColor4f( 1.0f, 1.0f, 1.0f, m_alpha);
 
     for(path_t::iterator it = m_path.begin(); it != m_path.end(); it++) {
+
         glVertex3f(it->x, it->y, it->z);
     }
     glEnd();
-    glPopMatrix();
+}
+
+float interf(float from, float to, float inter) {
+    return (to - from) * inter + from;
+    
+}
+
+Vec3f interVec3f(Vec3f from, Vec3f to, float inter) {
+    return Vec3f(interf(from.x, to.x, inter),
+                 interf(from.y, to.y, inter),
+                 interf(from.z, to.z, inter));
+}
+
+void Path::draw(float inter) {
+    
+    Vec3f last =  m_path.back();
+    m_path.pop_back();
+    
+    Vec3f interLast = interVec3f( m_path.back() , last, inter);
+    
+    glBegin(GL_LINE_STRIP);
+    glColor4f( 1.0f, 1.0f, 1.0f, m_alpha);
+    
+    for(path_t::iterator it = m_path.begin(); it != m_path.end(); it++) {
+        
+        glVertex3f(it->x, it->y, it->z);
+        
+    }
+    glVertex3f(interLast);
+    glEnd();
+    
+    glPointSize(2.0f);
+    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f);
+
+    glBegin(GL_POINTS);
+    glVertex3f(interLast);
+    glEnd();
+    
+    m_path.push_back( last);
+
 }
