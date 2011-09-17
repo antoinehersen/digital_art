@@ -17,6 +17,7 @@ public:
     void draw();
     void draw(float inter);
     void add_node();
+    void perturbe();
     
     ci::Vec3f last();
     

@@ -17,6 +17,15 @@
 using namespace ci;
 
 
+Vec3f addNoise(Vec3f v) {
+    const float noise = 0.02;
+    float x = v.x + Rand::randFloat( -noise, noise);
+    float y = v.y + Rand::randFloat( -noise, noise);
+    float z = v.z + Rand::randFloat( -noise, noise);
+    return Vec3f(x,y,z);
+}
+
+
 void Path::setup() {
     m_path.push_back( ci::Vec3f::zero());
     m_path.push_back( ci::Vec3f(1.0f, 0.0f, 0.0f));
@@ -59,7 +68,7 @@ void Path::add_node() {
     } else if( dir.z < -0.1f || dir.z > 0.1f ) {
         new_point = last + Vec3f(new_dir.x, new_dir.y, 0.0f);
     }
-    
+ //   new_point = addNoise(new_point);
     m_path.push_back(new_point);
     
 }
@@ -68,6 +77,15 @@ void Path::add_node() {
 ci::Vec3f Path::last(){
     return m_path.back();
 }
+
+
+void Path::perturbe() {
+for(path_t::iterator it = m_path.begin(); it != m_path.end(); it++) {
+    *it = addNoise(*it);
+    }
+}
+
+
 
 void Path::draw() {
 
