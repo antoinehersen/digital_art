@@ -63,10 +63,10 @@ void bm::prepareSettings( Settings *settings ){
 void borwnian_motionApp::setup(){
     Rand::randomize();
     gl::enableAdditiveBlending();
- //   setFullScreen(true);
+    setFullScreen(true);
     
 	// SETUP CAMERA
-	mCameraDistance = 5.0f;
+	mCameraDistance = -5.0f;
 	mEye			= Vec3f( 0.0f, 0.0f, mCameraDistance );
 	mCenter			= Vec3f::zero();
 	mUp				= Vec3f::yAxis();
@@ -80,8 +80,8 @@ void borwnian_motionApp::setup(){
 	mParams = params::InterfaceGl( "Browniw", Vec2i( 200, 300 ) );
 	mParams.addParam( "Scene Rotation", &mSceneRotation, "opened=1" );
 	mParams.addSeparator();
-	mParams.addParam( "Eye Distance", &mCameraDistance, "min=-5.0 max=20 step=0.5 keyIncr=s keyDecr=w" );
-    mParams.addParam( "Alpha", &path.m_alpha, "min=0.0 max=1.0 step=0.05 keyIncr=q keyDecr=e" );
+	mParams.addParam( "Eye Distance", &mCameraDistance, "min=-20.0 max=20 step=0.5 keyIncr=s keyDecr=w" );
+//    mParams.addParam( "Alpha", &path.m_alpha, "min=0.0 max=1.0 step=0.05 keyIncr=q keyDecr=e" );
     mParams.addParam( "Line Width", &mLineW, "min=0.0 max=5.0 step=0.05 " );
     mParams.addParam( "Up Factor", &upFactor, "min=0.5 max=5.0 step=0.05 " );
     
@@ -110,10 +110,13 @@ void borwnian_motionApp::setup(){
 
 void borwnian_motionApp::mouseDown( MouseEvent event )
 {
+    for(int i =0 ; i< 100; i++) {
+        path.add_node();
+    }
 }
 
 bool borwnian_motionApp::everySecond() {
-    const float duration = 2.5f;
+    const float duration = 2.0f;
     float time = getElapsedSeconds();
     
 
@@ -125,7 +128,7 @@ bool borwnian_motionApp::everySecond() {
     }
     interpolate = (time - lastTime) / duration;
     
- //   interpolate = easeInOutQuad( interpolate);
+//    interpolate = easeInOutQuad( interpolate);
     return false;
 }
 float borwnian_motionApp::interf(float from, float to) {
@@ -140,7 +143,14 @@ Vec3f borwnian_motionApp::interVec3f(Vec3f from, Vec3f to) {
 }
 
 void borwnian_motionApp::update() {
-    
+    if (everySecond()) {
+        lastLast = prevPoint;
+        prevPoint = path.last();
+        path.add_node();
+        mOldCenter = mCenter;
+        mOldUp = mUp;
+        mOldEye = mEye;
+    }  
 
     Vec3f newPoint = path.last();
     mCenter = newPoint;
@@ -152,14 +162,7 @@ void borwnian_motionApp::update() {
     
     mEye =  mCameraDistance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
     
-    if (everySecond()) {
-        lastLast = prevPoint;
-        prevPoint = path.last();
-        path.add_node();
-        mOldCenter = mCenter;
-        mOldUp = mUp;
-        mOldEye = mEye;
-    }
+
     
     // UPDATE CAMERA
     //	mEye = Vec3f( 0.0f, 0.0f, mCameraDistance );

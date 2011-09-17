@@ -11,6 +11,9 @@
 #include "Path.h"
 #include "cinder/Rand.h"
 
+#include "cinder/Easing.h"
+
+
 using namespace ci;
 
 
@@ -95,11 +98,18 @@ void Path::draw(float inter) {
     m_path.pop_back();
     
     Vec3f interLast = interVec3f( m_path.back() , last, inter);
+    m_alpha = 0.4;
     
     glBegin(GL_LINE_STRIP);
-    glColor4f( 1.0f, 1.0f, 1.0f, m_alpha);
     
+    float curr_size = 0;
+    float total_size = m_path.size();
     for(path_t::iterator it = m_path.begin(); it != m_path.end(); it++) {
+        m_alpha = curr_size / total_size;
+        curr_size += 1.0f;
+        m_alpha = ( easeInAtan (m_alpha))*0.3 + 0.08;
+        glColor4f( 1.0f, 1.0f, 1.0f, m_alpha);
+
         
         glVertex3f(it->x, it->y, it->z);
         
