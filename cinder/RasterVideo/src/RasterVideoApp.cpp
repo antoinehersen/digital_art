@@ -38,6 +38,8 @@ public:
     
     bool useFullScreen;
     
+
+    
 };
 
 void RasterVideoApp::setup()

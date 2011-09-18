@@ -8,6 +8,9 @@
 #include "cinder/Camera.h"
 #include "cinder/Rand.h"
 
+//#include "cinder/qtime/MovieWriter.h"
+
+
 #include "cinder/Easing.h"
 
 
@@ -32,6 +35,8 @@ public:
     Vec3f interVec3f(Vec3f from, Vec3f to);
     float interf(float from, float to);
     
+//    qtime::MovieWriter	mMovieWriter;
+
     
     // PARAMS
 	params::InterfaceGl	mParams;
@@ -61,13 +66,13 @@ typedef borwnian_motionApp bm;
 
 void bm::prepareSettings( Settings *settings ){
     settings->setWindowSize( 1280, 720 );
-	settings->setFrameRate( 60.0f );
+	settings->setFrameRate( 30.0f );
 }
 
 void borwnian_motionApp::setup(){
     Rand::randomize();
     gl::enableAdditiveBlending();
-    setFullScreen(true);
+ //   setFullScreen(true);
     
     duration = 20.0f;
     
@@ -108,12 +113,23 @@ void borwnian_motionApp::setup(){
     
     path.add_node();
     
-    for(int i =0 ; i< 300000; i++) {
+    for(int i =0 ; i< 500000; i++) {
         path.add_node();
     }
 
     
     lastTime = getElapsedSeconds() - 100 ;
+    
+//    
+//    string path = getSaveFilePath();
+//	if( path.empty() )
+//		return; // user cancelled save
+//    
+//    
+//	qtime::MovieWriter::Format format;
+//	if( qtime::MovieWriter::getUserCompressionSettings( &format) ) {
+//		mMovieWriter = qtime::MovieWriter( path, getWindowWidth(), getWindowHeight(), format );
+//	}
 }
 
 void borwnian_motionApp::mouseDown( MouseEvent event )
@@ -230,6 +246,10 @@ void borwnian_motionApp::draw()
     
     
     path.draw(interpolate);
+    
+//    // add this frame to our movie
+//	if( mMovieWriter )
+//		mMovieWriter.addFrame( copyWindowSurface() );
 }
 
 
