@@ -116,9 +116,8 @@ void Path::draw(float inter) {
     m_path.pop_back();
     
     Vec3f interLast = interVec3f( m_path.back() , last, inter);
-    m_alpha = 0.4;
     glEnable( GL_LINE_SMOOTH );
-glEnable( GL_MULTISAMPLE_ARB );
+    glEnable( GL_MULTISAMPLE_ARB );
     glHint(GL_LINE_SMOOTH_HINT,GL_NICEST); 
     
     glBegin(GL_LINE_STRIP);
@@ -126,19 +125,21 @@ glEnable( GL_MULTISAMPLE_ARB );
     float curr_size = 0;
     float total_size = m_path.size();
     for(path_t::iterator it = m_path.begin(); it != m_path.end(); it++) {
-        m_alpha = curr_size / total_size;
+        float alpha = curr_size / total_size;
         curr_size += 1.0f;
-        m_alpha = ( easeInAtan (m_alpha))*0.3 + 0.08;
-        glColor4f( 1.0f, 1.0f, 1.0f, m_alpha);
+        alpha = ( easeInAtan (alpha))*m_alpha + 0.08;
+        glColor4f( 1.0f, 1.0f, 1.0f, alpha);
 
         
         glVertex3f(it->x, it->y, it->z);
         
     }
+    glColor4f( 1.0f, 1.0f, 1.0f, 0.8f);
+
     glVertex3f(interLast);
     glEnd();
     
-    glPointSize(2.0f);
+    glPointSize(3.0f);
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f);
 
     glBegin(GL_POINTS);

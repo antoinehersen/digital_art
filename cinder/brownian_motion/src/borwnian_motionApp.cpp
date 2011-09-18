@@ -69,30 +69,38 @@ void borwnian_motionApp::setup(){
     gl::enableAdditiveBlending();
     setFullScreen(true);
     
-    duration = 10.0f;
+    duration = 20.0f;
     
 	// SETUP CAMERA
     cameraFollow = true;
-	mCameraDistance = -10.0f;
+	mCameraDistance = -3.0f;
 	mEye			= Vec3f( 0.0f, 0.0f, mCameraDistance );
 	mCenter			= Vec3f::zero();
 	mUp				= Vec3f::yAxis();
 	mCam.setPerspective( 75.0f, getWindowAspectRatio(), 0.1f, 200000.0f );
     
+    mOldCenter = mCenter;
+    mOldUp = mUp;
+    mOldEye = mEye;
+    
     mLineW = 1.0f;
-    path.m_alpha = 0.2f;
-    upFactor = 2.0f;
+    path.m_alpha = 0.12f;
+    upFactor = 2.5f;
+    
+    lastLast = Vec3f(0,0,0);
+    prevPoint = Vec3f(0,0,1);
+    newPoint = Vec3f(0,1,1);
     
     // SETUP PARAMS
-	mParams = params::InterfaceGl( "Browniw", Vec2i( 200, 300 ) );
+	mParams = params::InterfaceGl( "Brownian", Vec2i( 200, 300 ) );
 	mParams.addParam( "Scene Rotation", &mSceneRotation, "opened=1" );
 	mParams.addSeparator();
 	mParams.addParam( "Eye Distance", &mCameraDistance, "min=-20.0 max=20 step=0.5" );
-    //    mParams.addParam( "Alpha", &path.m_alpha, "min=0.0 max=1.0 step=0.05 keyIncr=q keyDecr=e" );
+    mParams.addParam( "Alpha", &path.m_alpha, "min=0.0 max=1.0 step=0.05 keyIncr=q keyDecr=e" );
     mParams.addParam( "Line Width", &mLineW, "min=0.0 max=5.0 step=0.05 " );
     mParams.addParam( "Up Factor", &upFactor, "min=0.5 max=5.0 step=0.05 " );
     mParams.addParam( "Duration", &duration, "min=0.5 max=50.0 step=0.5 " );
-
+    mParams.setOptions(""," iconified=true");;
     
     
     
@@ -103,18 +111,9 @@ void borwnian_motionApp::setup(){
     for(int i =0 ; i< 300000; i++) {
         path.add_node();
     }
-    mCenter = path.last();
-    //   for(int i =0 ; i< 1000000; i++) {
-    //       path.add_node();
-    //       }
-    for(int i =0 ; i< 10; i++) {
-        
-        path.add_node();
-        mCenter = mEye;
-        mEye =  path.last();
-    }
+
     
-    lastTime = getElapsedSeconds();
+    lastTime = getElapsedSeconds() - 100 ;
 }
 
 void borwnian_motionApp::mouseDown( MouseEvent event )
@@ -158,7 +157,7 @@ bool borwnian_motionApp::everySecond() {
     }
     interpolate = (time - lastTime) / duration;
     
-    //    interpolate = easeInOutQuad( interpolate);
+    interpolate = easeInOutQuad( interpolate);
     return false;
 }
 float borwnian_motionApp::interf(float from, float to) {
@@ -191,7 +190,7 @@ void borwnian_motionApp::update() {
             if (fabs(s.x) < 0.01f && fabs(s.y) < 0.01f && fabs(s.z) < 0.01 ) {
                 mUp = - mUp;
             }
-            float distance = mCameraDistance;
+            float distance = mCameraDistance - Rand::randInt(15) ;
             if ( Rand::randInt(10) == 0 ) {
                 distance *= Rand::randInt(20);
             }
