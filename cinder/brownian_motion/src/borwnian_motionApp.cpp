@@ -30,6 +30,8 @@ public:
     void keyDown( KeyEvent event );
 	void update();
 	void draw();
+    void resetScreen();
+
     
     bool everySecond();
     float interpolate;
@@ -61,6 +63,8 @@ public:
     Vec3f lastLast, prevPoint, newPoint;
     
     Path path;
+    
+    bool useFullScreen;
 };
 
 
@@ -74,7 +78,8 @@ void bm::prepareSettings( Settings *settings ){
 void borwnian_motionApp::setup(){
     Rand::randomize();
     gl::enableAdditiveBlending();
- //   setFullScreen(true);
+    useFullScreen = true;
+   setFullScreen(useFullScreen);
     
     duration = 20.0f;
     
@@ -135,6 +140,14 @@ void borwnian_motionApp::setup(){
 //	}
 }
 
+void  borwnian_motionApp::resetScreen() {
+    setFullScreen(useFullScreen);    
+
+    mCam.setPerspective( 75.0f, getWindowAspectRatio(), 0.1f, 200000.0f );
+
+}
+
+
 void borwnian_motionApp::mouseDown( MouseEvent event )
 {
     //    for(int i =0 ; i< 100; i++) {
@@ -160,8 +173,13 @@ void borwnian_motionApp::keyDown( KeyEvent event )
         
         mEye =  distance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
         
+    }  else if (event.getCode() == KeyEvent::KEY_ESCAPE ) {
+        useFullScreen= false;
+        resetScreen();
+    } else if (event.getCode() == KeyEvent::KEY_f) {
+        useFullScreen = ! useFullScreen;
+    resetScreen();
     }
-    
 }
 
 bool borwnian_motionApp::everySecond() {
