@@ -111,7 +111,7 @@ void borwnian_motionApp::setup(){
     mParams.addParam( "Alpha", &path.m_alpha, "min=0.0 max=1.0 step=0.05 keyIncr=q keyDecr=e" );
     mParams.addParam( "Line Width", &mLineW, "min=0.0 max=5.0 step=0.05 " );
     mParams.addParam( "Up Factor", &upFactor, "min=0.5 max=5.0 step=0.05 " );
-    mParams.addParam( "Duration", &duration, "min=0.5 max=50.0 step=0.5 " );
+    mParams.addParam( "Duration", &duration, "min=0.1 max=50.0 step=0.1 " );
     mParams.setOptions(""," iconified=true");;
     
  //   mFont = Font( "Arial", 12.0f );

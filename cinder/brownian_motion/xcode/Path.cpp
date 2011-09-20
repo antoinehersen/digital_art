@@ -77,6 +77,9 @@ void Path::drawVBO() {
         glDrawArrays(GL_LINE_STRIP, 0, arr_size);
 
     }
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 
@@ -170,7 +173,8 @@ void Path::draw(float inter) {
     glColor4f( 1.0f, 1.0f, 1.0f, m_alpha);
 
     drawVBO();
-    
+    glColor4f( 1.0f, 1.0f, 1.0f, m_alpha + 0.1f);
+
     glBegin(GL_LINE_STRIP);
     
 //    float curr_size = 0;
