@@ -194,7 +194,7 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator, UInt8 *MACAddress
     return kernResult;
 }
 
-int getUUID()
+uint32_t getUUID()
 {
     kern_return_t	kernResult = KERN_SUCCESS;
     io_iterator_t	intfIterator;
@@ -219,10 +219,10 @@ int getUUID()
     
     (void) IOObjectRelease(intfIterator);	// Release the iterator.
     
-    int results = 0;
+    uint32_t results = 0;
 
     for(int i = 0; i < kIOEthernetAddressSize; i++) {
-        results += MACAddress[i];
+        results = MACAddress[i] + results*16*16;
     }
     
     return results;

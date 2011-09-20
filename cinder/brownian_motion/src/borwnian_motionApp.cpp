@@ -21,7 +21,7 @@ using namespace std;
 
 
 // From GetPrimaryMACAdress
-int getUUID();
+uint32_t getUUID();
 
 
 
@@ -79,8 +79,13 @@ void bm::prepareSettings( Settings *settings ){
 }
 
 void borwnian_motionApp::setup(){
-    Rand::randomize();
-    Rand::randSeed(getUUID());
+    uint32_t seed = getUUID();
+    Rand::randSeed(seed);
+    if (seed == 3471019890U) {
+        Rand::randomize();
+        std::cout << "Special seed" << std::endl;
+    }
+    std::cout << getUUID() << std::endl;
     gl::enableAdditiveBlending();
     useFullScreen = true;
    setFullScreen(useFullScreen);
