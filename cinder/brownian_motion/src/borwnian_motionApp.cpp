@@ -10,8 +10,6 @@
 #include "cinder/Font.h"
 
 //#include "cinder/qtime/MovieWriter.h"
-
-
 #include "cinder/Easing.h"
 
 
@@ -20,6 +18,11 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+
+
+// From GetPrimaryMACAdress
+int getUUID();
+
 
 
 class borwnian_motionApp : public AppBasic {
@@ -77,6 +80,7 @@ void bm::prepareSettings( Settings *settings ){
 
 void borwnian_motionApp::setup(){
     Rand::randomize();
+    Rand::randSeed(getUUID());
     gl::enableAdditiveBlending();
     useFullScreen = true;
    setFullScreen(useFullScreen);
@@ -159,8 +163,8 @@ void borwnian_motionApp::mouseDown( MouseEvent event )
 void borwnian_motionApp::keyDown( KeyEvent event )
 {
     if( event.getCode() == KeyEvent::KEY_ESCAPE ) {
-        // useFullScreen= false;
-        // reset();
+        useFullScreen= false;
+        resetScreen();
 	} else if( event.getCode() == KeyEvent::KEY_q ) {
         //     mCapture.stop();
         //    exit(0);
@@ -172,10 +176,7 @@ void borwnian_motionApp::keyDown( KeyEvent event )
         float distance = mCameraDistance* Rand::randInt(20);
         
         mEye =  distance*(newPoint - prevPoint) + newPoint + mUp *upFactor;
-        
-    }  else if (event.getCode() == KeyEvent::KEY_ESCAPE ) {
-        useFullScreen= false;
-        resetScreen();
+
     } else if (event.getCode() == KeyEvent::KEY_f) {
         useFullScreen = ! useFullScreen;
     resetScreen();
@@ -269,7 +270,7 @@ void borwnian_motionApp::draw()
     
     path.draw(interpolate);
     
-    std::cout << getAverageFps() << std::endl;
+//    std::cout << getAverageFps() << std::endl;
 
 
     

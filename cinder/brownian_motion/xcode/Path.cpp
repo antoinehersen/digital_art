@@ -65,7 +65,7 @@ void Path::generateVBO() {
     // Allocate and load position data into the VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vec3f) * arr_size, m_path, GL_STATIC_DRAW);
     
-    std::cout << posBufferName << ' '  << sizeof(Vec3f) * arr_size << std::endl;
+//    std::cout << posBufferName << ' '  << sizeof(Vec3f) * arr_size << std::endl;
     
 }
 
