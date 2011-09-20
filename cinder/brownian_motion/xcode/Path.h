@@ -13,17 +13,35 @@
 
 class Path {
 public:
+    Path();
+    
     void setup();
     void draw();
     void draw(float inter);
     void add_node();
-    void perturbe();
     
     ci::Vec3f last();
+    ci::Vec3f get(size_t i);
+    ci::Vec3f getLast(size_t i);
     
-    typedef std::list<ci::Vec3f> path_t;
-    path_t m_path;
+    void push_back(ci::Vec3f );
+        
+  
+    
     float m_alpha;
+    
+private :
+    
+    typedef ci::Vec3f * path_t;
+    path_t m_path;
+    
+    size_t last_idx;
+    const size_t arr_size;
+    
+    void generateVBO();
+    void drawVBO();
+    
+    std::list< GLuint > vbos;
 };
 
 // extern void glVertex3fv (const GLfloat *v);

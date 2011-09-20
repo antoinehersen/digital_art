@@ -7,6 +7,7 @@
 #include "cinder/params/Params.h"
 #include "cinder/Camera.h"
 #include "cinder/Rand.h"
+#include "cinder/Font.h"
 
 //#include "cinder/qtime/MovieWriter.h"
 
@@ -36,6 +37,7 @@ public:
     float interf(float from, float to);
     
 //    qtime::MovieWriter	mMovieWriter;
+//    Font mFont;
 
     
     // PARAMS
@@ -107,13 +109,14 @@ void borwnian_motionApp::setup(){
     mParams.addParam( "Duration", &duration, "min=0.5 max=50.0 step=0.5 " );
     mParams.setOptions(""," iconified=true");;
     
-    
+ //   mFont = Font( "Arial", 12.0f );
+
     
     path.setup();
     
     path.add_node();
     
-    for(int i =0 ; i< 500000; i++) {
+    for(int i =0 ; i< 200000; i++) {
         path.add_node();
     }
 
@@ -235,7 +238,8 @@ void borwnian_motionApp::update() {
 void borwnian_motionApp::draw()
 {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) ); 
+	gl::clear( Color( 0, 0, 0 ) );
+
     
     // DRAW PARAMS WINDOW
 	params::InterfaceGl::draw();
@@ -246,6 +250,10 @@ void borwnian_motionApp::draw()
     
     
     path.draw(interpolate);
+    
+    std::cout << getAverageFps() << std::endl;
+
+
     
 //    // add this frame to our movie
 //	if( mMovieWriter )
